@@ -1,0 +1,6 @@
+// Load
+int testInt = FileBasedPrefs.HasKeyForInt("Test_Int") ? FileBasedPrefs.GetInt("Test_Int") : default;
+
+// Save
+FileBasedPrefs.SetInt("Test_Int", testInt);
+FileBasedPrefs.ManualySave();
