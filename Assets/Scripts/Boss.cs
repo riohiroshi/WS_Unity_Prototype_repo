@@ -8,6 +8,8 @@ namespace ProjectDynamax.GameLogic
 {
     public class Boss : MonoBehaviour
     {
+        public bool HasFinishedAttack { get; private set; }
+
         private Vector3 _currentPosition;
 
         #region Unity_Lifecycle
@@ -23,15 +25,30 @@ namespace ProjectDynamax.GameLogic
 
         public void TakeHit(Vector3 hitDirection)
         {
-            DOTween.Sequence()
-                .AppendCallback(() =>
+            transform.DOMove(_currentPosition + hitDirection.normalized * 0.5f, 0.1f)
+                .OnComplete(() => transform.DOMove(_currentPosition, 0.25f));
+
+            //DOTween.Sequence()
+            //    .AppendCallback(() =>
+            //    {
+            //        transform.DOMove(_currentPosition + hitDirection.normalized, 0.15f);
+            //    })
+            //    .AppendInterval(0.15f)
+            //    .AppendCallback(() =>
+            //    {
+            //        transform.DOMove(_currentPosition, 0.1f);
+            //    });
+        }
+
+        public void Attack()
+        {
+            HasFinishedAttack = false;
+
+            transform.DOMove(_currentPosition + transform.forward * (-3f), 0.25f)
+                .OnComplete(() =>
                 {
-                    transform.DOMove(_currentPosition + hitDirection.normalized, 0.15f);
-                })
-                .AppendInterval(0.15f)
-                .AppendCallback(() =>
-                {
-                    transform.DOMove(_currentPosition, 0.1f);
+                    transform.DOMove(_currentPosition, 0.5f);
+                    HasFinishedAttack = true;
                 });
         }
     }

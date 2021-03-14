@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Namespace
+namespace ProjectDynamax.SceneSetup
 {
+    [ExecuteAlways]
     public class PlanetBuilder : MonoBehaviour
     {
         [SerializeField] private int _resolutionFactor = 100;
@@ -25,7 +26,7 @@ namespace Namespace
         #region Unity_Lifecycle
         private void Awake() { }
         private void OnEnable() { }
-        private void Start() { }
+        private void Start() { InitializePlanet(); }
         private void FixedUpdate() { }
         private void Update() { }
         private void LateUpdate() { }
@@ -35,7 +36,7 @@ namespace Namespace
 
         private void OnValidate()
         {
-            InitializePlanet();
+            //InitializePlanet();
 
             //InitializeBuilder();
             //GenerateMesh();
@@ -194,9 +195,7 @@ namespace Namespace
         private void BuildPlanet()
         {
             ClearMeshData();
-
             AddMeshData_Sphere();
-
             Draw();
         }
 

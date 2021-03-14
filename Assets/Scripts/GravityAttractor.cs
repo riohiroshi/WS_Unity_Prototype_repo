@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace ProjectDynamax.Gravity
+namespace ProjectDynamax.SceneSetup
 {
     public class GravityAttractor : MonoBehaviour
     {

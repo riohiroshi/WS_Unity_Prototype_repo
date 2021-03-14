@@ -1,11 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 using GenericUtility.Singleton;
 
-using ProjectDynamax.Gravity;
+using ProjectDynamax.SceneSetup;
 
 namespace ProjectDynamax.GameLogic
 {
@@ -37,12 +36,12 @@ namespace ProjectDynamax.GameLogic
         private MinionParent _minions;
 
         #region Unity lifecycle
-        private void Awake() { /*LockFrameRate();*/ InitializeMinions(); }
+        private void Awake() { LockFrameRate(); /*InitializeMinions();*/ }
         private void OnEnable() { }
         private void Reset() { }
         private void Start() { }
         private void FixedUpdate() { }
-        private void Update() { _deltaTime += (Time.unscaledDeltaTime - _deltaTime) * 0.1f; MinionAttackTest(); }
+        private void Update() { /*MinionAttackTest();*/ }
         private void LateUpdate() { }
         private void OnDrawGizmos() { }
         private void OnGUI() { DrawGUI(); }
@@ -52,49 +51,59 @@ namespace ProjectDynamax.GameLogic
 
         private void LockFrameRate()
         {
+            QualitySettings.vSyncCount = 2;
             Application.targetFrameRate = 30;
-            QualitySettings.vSyncCount = 1;
         }
 
-        private void InitializeMinions()
-        {
-            _minions = _minionParent.GetComponent<MinionParent>();
+        //private void InitializeMinions()
+        //{
+        //    _minions = _minionParent.GetComponent<MinionParent>();
 
-            for (int i = 0; i < _minionsAmount; i++)
-            {
-                if (_isControlledBySingleMinion)
-                {
-                    Instantiate(_minionPrefab, _minionParent.position + Random.insideUnitSphere * 15, Quaternion.identity, _minionParent);
-                }
-                else
-                {
-                    Instantiate(_minionPrefab2, _minionParent.position + Random.insideUnitSphere * 15, Quaternion.identity, _minionParent);
-                }
-            }
-        }
+        //    for (int i = 0; i < _minionsAmount; i++)
+        //    {
+        //        if (_isControlledBySingleMinion)
+        //        {
+        //            Instantiate(_minionPrefab, _minionParent.position + Random.insideUnitSphere * 15, Quaternion.identity, _minionParent);
+        //        }
+        //        else
+        //        {
+        //            Instantiate(_minionPrefab2, _minionParent.position + Random.insideUnitSphere * 15, Quaternion.identity, _minionParent);
+        //        }
+        //    }
+        //}
 
-        private void MinionAttackTest()
-        {
-            if (!Input.GetMouseButtonDown(0)) { return; }
-            if (_attackCoroutine != null) { StopCoroutine(_attackCoroutine); }
+        //private void MinionAttackTest()
+        //{
+        //    if (!Input.GetMouseButtonDown(0)) { return; }
+        //    if (_attackCoroutine != null) { StopCoroutine(_attackCoroutine); }
 
-            _attackCoroutine = StartCoroutine(_isControlledBySingleMinion ? Minion.MinionsAttack() : _minions.MinionsAttack());
-        }
+        //    _attackCoroutine = StartCoroutine(_isControlledBySingleMinion ? Minion.MinionsAttack() : _minions.MinionsAttack());
+        //}
 
         private void DrawGUI()
         {
             GUI.matrix = Matrix4x4.Rotate(Quaternion.Euler(0, 0, 0));
 
-            var rect = new Rect(10, 10, 200, 40);
+            var xOffset = 10f;
+            var yOffset = 10f;
+            var ySpacing = 50f;
+            var rectWidth = 200f;
+            var rectHeight = 40f;
 
+            var rect = new Rect(xOffset, yOffset, rectWidth, rectHeight);
+
+            _deltaTime += (Time.unscaledDeltaTime - _deltaTime) * 0.1f;
             GUI.Box(rect, $"Current FPS: {(1.0f / _deltaTime):N2}", _style);
 
-            rect = new Rect(10, 60, 200, 40);
+            yOffset += ySpacing;
 
-            var currentIndex = _isControlledBySingleMinion ? Minion.CurrentMinionIndex : _minions.CurrentMinionIndex;
-            GUI.Box(rect, $"Current Remain Minion: {_minionsAmount - currentIndex}", _style);
+            rect = new Rect(xOffset, yOffset, rectWidth, rectHeight);
 
-            rect = new Rect(10, 110, 200, 40);
+            GUI.Box(rect, $"Current Remain Minion: {Minion.CurrentMinionIndex}", _style);
+
+            yOffset += ySpacing;
+
+            rect = new Rect(xOffset, yOffset, rectWidth, rectHeight);
 
             GUI.Box(rect, $"Current AB Text Mode: {_currentABTextMode}", _style);
         }

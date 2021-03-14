@@ -79,7 +79,7 @@ public static class FileBasedPrefs
         {
             var saveFileText = File.ReadAllText(GetSaveFilePath());
 
-            if (_SCRAMBLE_SAVE_DATA) { saveFileText = DataScrambler(saveFileText); }
+            saveFileText = _SCRAMBLE_SAVE_DATA ? DataScrambler(saveFileText) : saveFileText;
 
             try { _latestData = JsonUtility.FromJson<FileBasedPrefsSaveData>(saveFileText); }
             catch (ArgumentException e)
@@ -107,7 +107,7 @@ public static class FileBasedPrefs
     {
         var streamWriter = new StreamWriter(GetSaveFilePath());
 
-        if (_SCRAMBLE_SAVE_DATA) { data = DataScrambler(data); }
+        data = _SCRAMBLE_SAVE_DATA ? DataScrambler(data) : data;
 
         streamWriter.Write(data);
         streamWriter.Close();
